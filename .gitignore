@@ -1,5 +1,16 @@
+*
+!*.*
+!*/
+
 *.zip
 *.tar
 *.tar.zp
 Linux_Commands/
 practice/
+Lab-1/progprepassignment.pdf
+*.gz
+*.fls
+*.log
+*.fdb_latexmk
+*.aux
+*.out
