@@ -19,7 +19,7 @@ struct list history;
 
 void insert (char *);
 void show (int);
-void get_cmd(char *[]);
+void exec_cmd(char *[]);
 
 int main (){
 
@@ -37,40 +37,14 @@ int main (){
 
 		getcwd(work_dir, sizeof(work_dir));
 		printf("\033[1;36m%s@\033[1;35m%s:\033[01;33m%s\033[1;31m@ \033[0m", username, hostname, work_dir);
-		// printf("\033[1;36msubash:\033[0m ");
 		char *argv[100];
-		get_cmd(argv);
+		exec_cmd(argv);
 
-		if(strcmp(argv[0],"exit")==0){
-			exit(0);
-		}
-		else if(argv[0][0] == '!'){
-			if(argv[1] != NULL){
-				// printf("%s\n", argv[0][1]);
-				show(atoi(argv[1]));
-			}
-			else{
-				// printf("%s\n", argv[0][2]);
-				show(10);
-			}
-		}
-		else if(strcmp(argv[0],"cd")==0){
-			chdir(argv[1]);
-		}
-		else{
-			pid_t pid = vfork();
-			if(pid == 0){
-				execvp(argv[0], argv);
-			}
-			else{
-				wait(NULL);
-			}
-		}
 	}
 	return 0;
 }
 
-void get_cmd(char *argv[100]){
+void exec_cmd(char *argv[100]){
 
 	char *user_input = (char *)malloc(100);
 	scanf(" %[^\n]", user_input);
@@ -86,14 +60,36 @@ void get_cmd(char *argv[100]){
 		i++;
 		argv[i] = strtok(NULL, " ");
 	}
+
+	if(strcmp(argv[0],"exit")==0){
+		exit(0);
+	}
+	else if(argv[0][0] == '!'){
+		if(argv[1] != NULL){
+			show(atoi(argv[1]));
+		}
+		else{
+			show(10);
+		}
+	}
+	else if(strcmp(argv[0],"cd")==0){
+		chdir(argv[1]);
+	}
+	else{
+		pid_t pid = vfork();
+		if(pid == 0){
+			execvp(argv[0], argv);
+		}
+		else{
+			wait(NULL);
+		}
+	}
 }
 
 void insert (char *cmd){
 	
 	struct node* temp = (struct node*)malloc(sizeof(struct node));
-	// strcmp(cmd, '\0');
 	temp->command = cmd;
-	// strcpy(temp->command, cmd);
 	
 	if(history.head == NULL){
 		temp->next = NULL;
@@ -106,25 +102,20 @@ void insert (char *cmd){
 	history.head = temp;
 
 	if(history.count == 10){
-		// printf("\n%s:\n", cmd);
 		struct node* temp = history.head, temp1;
 		
 		for(int i=0; i<9; i++){
 			temp = temp->next;
-			// printf("test\n");
 		}
 		temp->next = NULL;
-		// show();
 	}
 	else{
 		history.count += 1;
 	}
-	
 }
 
 void show (int n){
 
-	// printf("count = %d\n", n);
 	struct node* temp = history.head;
 	int counter = 0;
 	while(temp != NULL && counter < n){

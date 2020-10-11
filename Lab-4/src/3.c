@@ -10,7 +10,7 @@ int main (){
 	while(1){
 		pid_t pid = fork();
 		if(pid == 0){
-			sleep(15);
+			sleep(10);
 			exit(0);
 		}
 		count += 1;

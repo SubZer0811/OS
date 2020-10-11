@@ -13,17 +13,19 @@ int main (){
 		int len;
 	};
 
-	char *text = "abqweewqbahtatha";
+	char *text = "hi there! how are you?";
 
 	char cur_char = text[0];
 	int lens = 1, count = 1;
 
-	key_t key = ftok("shmfile",65);
+	key_t key = ftok("shmfile", 65);
 	int shmid = shmget(key,sizeof(struct histo),0666|IPC_CREAT);
 	struct histo *hist = shmat(shmid, 0, 0);
 	
+	printf("String: %s\n", text);
+	printf("--------Histogram--------\n");
+
 	hist->len = 1;
-	printf("test\n");
 	hist->chars[hist->len-1] = cur_char;
 	
 	for(int i=1; i<strlen(text); i++){
@@ -32,9 +34,9 @@ int main (){
 			count += 1;
 		}
 		else{
-			//check if character exists in the list.
-			//if not, then add to it and fork
-			//else continue
+			// check if character exists in the list.
+			// if not, then add to it and fork
+			// else continue
 			// printf("%c: %c\n", cur_char, text[i]);
 			int flag = 0;
 			for(int j=0; j<hist->len; j++){
@@ -62,8 +64,8 @@ int main (){
 	}	
 	
 	printf("%c: %d\n", cur_char, count);
-	// shmdt(hist);
-	// shmctl(shmid,IPC_RMID,NULL);
+	shmdt(hist);
+	shmctl(shmid,IPC_RMID,NULL);
 
 	return 0;
 }
