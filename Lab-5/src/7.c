@@ -5,7 +5,7 @@
 #include<pthread.h>
 
 struct arguments{
-	int arr[20];
+	int arr[20][2];
 	int start;
 	int end;
 	int key;
@@ -25,7 +25,7 @@ int main (){
 
 	printf("Enter elements of array: ");
 	for(int i=0; i<n; i++)
-		scanf("%d", &args->arr[i]);
+		scanf("%d", &args->arr[i][0]);
 
 	printf("Enter key to search for: ");
 	scanf("%d", &args->key);
@@ -39,8 +39,11 @@ int main (){
 		pthread_join(threads[i], NULL);
 	}
 
-	return 0;
+	for(int i=0; i<n; i++)
+		if(args->arr[i][1] == 1)
+			printf("Key found at address: %d\n", i);
 
+	return 0;
 }
 
 void* binary_search (void* a){
@@ -53,8 +56,8 @@ void* binary_search (void* a){
 		return NULL;
 	}
 	if(args->start == args->end){
-		if(args->arr[mid] == args->key){
-			printf("Key found at address: %d\n", mid);
+		if(args->arr[mid][0] == args->key){
+			args->arr[mid][1] = 1;
 		}
 		return NULL;
 	}
@@ -67,8 +70,8 @@ void* binary_search (void* a){
 			pthread_create(&threads[itr], NULL, binary_search, args);itr++;
 			args->start=start; args->end=end;
 	}
-	if(args->arr[mid] == args->key){
-		printf("Key found at address: %d\n", mid);
+	if(args->arr[mid][0] == args->key){
+		args->arr[mid][1] = 1;
 	}
 	
 		args->end = mid-1;
