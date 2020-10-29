@@ -7,12 +7,12 @@
 
 struct arguments
 {
-	int arr[100], n, s, e;
+	int s, e;
 };
 
 
 void* merge_sort(void*);
-void merge(int arr[], int s, int mid, int e);
+void merge(int s, int mid, int e);
 void copy_arguments (const struct arguments*, struct arguments*);
 
 int array[] = {9, 8, 7, 4, 1, 3, 2, 5}, n = sizeof(array)/sizeof(int);
@@ -21,11 +21,10 @@ int main (){
 
 
 	struct arguments* args = (struct arguments*)malloc(sizeof(struct arguments));
-	args->n = n;
+
 	printf("Input Array: ");
-	for(int i=0; i<args->n; i++){
+	for(int i=0; i<n; i++){
 		printf("%d ", array[i]);
-		args->arr[i] = array[i];
 	}
 	printf("\n");
 
@@ -33,15 +32,15 @@ int main (){
 	merge_sort(args);
 
 	printf("Output Array: ");
-	for(int i=0; i<args->n; i++){
-		printf("%d ", args->arr[i]);
+	for(int i=0; i<n; i++){
+		printf("%d ", array[i]);
 	}
 	printf("\n");
 	
 	return 0;
 }
 
-void merge(int arr[], int s, int mid, int e){
+void merge(int s, int mid, int e){
 
 	int temp[e-s+1];
 	int i = 0;
@@ -49,40 +48,36 @@ void merge(int arr[], int s, int mid, int e){
 	int r = mid+1;
 	while( l<=mid && r<=e ){
 
-		if(arr[l] < arr[r]){
-			temp[i] = arr[l];
+		if(array[l] < array[r]){
+			temp[i] = array[l];
 			l++; i++;
 		}
-		else if(arr[l] > arr[r]){
-			temp[i] = arr[r];
+		else if(array[l] > array[r]){
+			temp[i] = array[r];
 			r++; i++;
 		}
-		else if(arr[l] == arr[r]){
-			temp[i] = arr[r];
+		else if(array[l] == array[r]){
+			temp[i] = array[r];
 			i++; r++;
-			temp[i] = arr[l];
+			temp[i] = array[l];
 			i++; l++;
 		}
 	}
 
 	while(l <= mid){
-		temp[i] = arr[l];
+		temp[i] = array[l];
 		i++; l++;
 	}
 
 	while(r <= e){
-		temp[i] = arr[r];
+		temp[i] = array[r];
 		i++; r++;
 	}
 
 	for(int j=0; j<i; j++){
-		arr[s+j] = temp[j];
+		array[s+j] = temp[j];
 	}
 
-	for(int i=s; i<e; i++){
-		printf("%d ", arr[i]);
-	}
-	printf("\n");
 }
 
 void* merge_sort(void* arg){
@@ -94,7 +89,6 @@ void* merge_sort(void* arg){
 		int mid = (args->s + args->e)/2;
 	
 		pthread_t right_tid, left_tid;
-		// left_pid = fork();
 
 		struct arguments* left_args = (struct arguments*)malloc(sizeof(struct arguments));
 		struct arguments* right_args = (struct arguments*)malloc(sizeof(struct arguments));
@@ -111,17 +105,12 @@ void* merge_sort(void* arg){
 		pthread_join(left_tid, NULL);
 		pthread_join(right_tid, NULL);
 		
-		merge(args->arr, args->s, mid, args->e);
+		merge(args->s, mid, args->e);
 
 	}
 }
 
 void copy_arguments (const struct arguments* src, struct arguments* dest){
-
-	dest->n = src->n;
-	for(int i=0; i<dest->n; i++){
-		dest->arr[i] = src->arr[i];
-	}
 	dest->s = src->s;
 	dest->e = src->e;
 }
