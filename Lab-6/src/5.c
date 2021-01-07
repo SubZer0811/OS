@@ -86,5 +86,9 @@ void* mode (void* args){
 			count += 1;
 		}
 	}
+	if(count > max_count){
+		max_count = count;
+		arg->mode = curr;
+	}
 	return NULL;
 }

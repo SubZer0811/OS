@@ -1,0 +1,4 @@
+book,compilation of pages,read material
+class,thing in c,where students learn
+page,compilation of words,virtual memory
+word,number of bits depends on sys arch, compilation of letters

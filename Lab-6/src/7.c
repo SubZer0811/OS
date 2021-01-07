@@ -11,19 +11,20 @@ int whereIsPoint(float x, float y);
 
 int main (){
 
-	pthread_t tid[8];
+	pthread_t tid[4];
 
-	for(int i=0; i<8; i++){
+	for(int i=0; i<4; i++){
+		srand(time(0));
 		pthread_create(&tid[i], NULL, runner, NULL);
 	}
 
-	for(int i=0; i<8; i++){
+	for(int i=0; i<4; i++){
 		pthread_join(tid[i], NULL);
 	}
 
 	float pi = 4.0 * num_c / num_s;
 
-	printf("%d:%d Approximate Value of PI = %f\n", num_s, num_c, pi);
+	printf("Approximate Value of PI = %f\n", pi);
 
 	return 0;
 
@@ -43,12 +44,10 @@ int whereIsPoint(float x, float y){
 void* runner (void* args){
 
 	time_t t;
-	srand((unsigned) time(&t));
 	float x, y;
 	for(int i=0; i<ITRS; i++){
 		x = (float)rand() / RAND_MAX;
 		y = (float)rand() / RAND_MAX;
-
 		if(whereIsPoint(x, y)){
 			num_c += 1;
 		}
